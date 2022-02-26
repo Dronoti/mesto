@@ -3,3 +3,10 @@
   align-items: baseline;
   margin-bottom: 8px;
 }
+
+@media screen and (max-width: 767px) {
+  .profile__first-line {
+    align-items: center;
+    margin-bottom: 7px;
+  }
+}

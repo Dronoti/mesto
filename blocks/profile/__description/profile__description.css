@@ -7,3 +7,12 @@
   overflow: hidden;
   max-width: 410px;
 }
+
+@media screen and (max-width: 767px) {
+  .profile__description {
+    font-size: 14px;
+    line-height: calc(17 / 14);
+    text-align: center;
+    max-width: 260px;
+  }
+}
