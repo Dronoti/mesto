@@ -21,96 +21,73 @@ const cardLinkInput = formAddCard.querySelector('.popup__input_card_link');
 const showCardImage = popupShowCard.querySelector('.popup__image');
 const showCardCaption = popupShowCard.querySelector('.popup__caption');
 
-const initialCards = [
-  {
-    name: 'Архыз',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg'
-  },
-  {
-    name: 'Челябинская область',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/chelyabinsk-oblast.jpg'
-  },
-  {
-    name: 'Иваново',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/ivanovo.jpg'
-  },
-  {
-    name: 'Камчатка',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kamchatka.jpg'
-  },
-  {
-    name: 'Холмогорский район',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kholmogorsky-rayon.jpg'
-  },
-  {
-    name: 'Байкал',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/baikal.jpg'
-  }
-];
-
-function addNewCard(name, link) {
+function createNewCard(name, link) {
   const newCard = cardTemplate.firstElementChild.cloneNode(true);
   const cardImage = newCard.querySelector('.elements__image');
   cardImage.src = link;
   cardImage.alt = name;
   newCard.querySelector('.elements__title').textContent = name;
-  elementsList.prepend(newCard);
+  newCard.querySelector('.elements__button-like').addEventListener('click', (evt) => {
+    evt.currentTarget.classList.toggle('elements__button-like_active');
+  });
+  newCard.querySelector('.elements__remove').addEventListener('click', () => {
+    newCard.remove();
+  });
+  cardImage.addEventListener('click', () => {
+    showCardImage.src = cardImage.src;
+    showCardImage.alt = cardImage.alt;
+    showCardCaption.textContent = cardImage.alt;
+    openPopup(popupShowCard);
+  });
+  return newCard;
 }
 
-function toggleOpenPopup(popup) {
-  popup.classList.toggle('popup_opened');
+function addCard(node, card) {
+  node.prepend(card);
 }
 
-function formProfileHandler(evt) {
+function openPopup(popup) {
+  popup.classList.add('popup_opened');
+}
+
+function closePopup(popup) {
+  popup.classList.remove('popup_opened');
+}
+
+function handleProfileSubmit(evt) {
   evt.preventDefault();
   if (nameInput.value)
     userName.textContent = nameInput.value;
   if (jobInput.value)
     userJob.textContent = jobInput.value;
-  toggleOpenPopup(popupEditProfile);
+  closePopup(popupEditProfile);
 }
 
-function formAddCardHandler(evt) {
+function handleAddCardSubmit(evt) {
   evt.preventDefault();
   if (cardNameInput.value && cardLinkInput.value)
-    addNewCard(cardNameInput.value, cardLinkInput.value);
-  toggleOpenPopup(popupAddCard);
+    addCard(elementsList, createNewCard(cardNameInput.value, cardLinkInput.value));
+  closePopup(popupAddCard);
 }
 
 for (let item of initialCards)
-  addNewCard(item.name, item.link);
+  addCard(elementsList, createNewCard(item.name, item.link));
 
 editProfileButton.addEventListener('click', () => {
   nameInput.value = userName.textContent;
   jobInput.value = userJob.textContent;
-  toggleOpenPopup(popupEditProfile);
+  openPopup(popupEditProfile);
 });
 
 addCardButton.addEventListener('click', () => {
   cardNameInput.value = '';
   cardLinkInput.value = '';
-  toggleOpenPopup(popupAddCard);
+  openPopup(popupAddCard);
 });
 
 closeFormButtons.forEach(item => item.addEventListener('click', (evt) => {
-  toggleOpenPopup(evt.target.closest('.popup'));
+  closePopup(evt.currentTarget.closest('.popup'));
 }));
 
-elementsList.addEventListener('click', (evt) => {
-  const like = evt.target.closest('.elements__button-like');
-  const remove = evt.target.closest('.elements__remove');
-  const show = evt.target.closest('.elements__image');
-  if (like)
-    like.classList.toggle('elements__button-like_active');
-  else if (remove)
-    remove.closest('.elements__item').remove();
-  else if (show) {
-    showCardImage.src = show.src;
-    showCardImage.alt = show.alt;
-    showCardCaption.textContent = show.alt;
-    toggleOpenPopup(popupShowCard);
-  }
-});
-
-formEditProfile.addEventListener('submit', formProfileHandler);
-formAddCard.addEventListener('submit', formAddCardHandler);
+formEditProfile.addEventListener('submit', handleProfileSubmit);
+formAddCard.addEventListener('submit', handleAddCardSubmit);
