@@ -35,9 +35,11 @@
     <div class="popup__container">
       <button class="popup__close" type="button"></button>
       <h2 class="popup__title">Редактировать профиль</h2>
-      <form class="popup__form" name="formEditProfile">
-        <input class="popup__input popup__input_profile_name" type="text" placeholder="Имя" name="profileName">
-        <input class="popup__input popup__input_profile_job" type="text" placeholder="Описание" name="profileJob">
+      <form class="popup__form" name="formEditProfile" novalidate>
+        <input minlength="2" maxlength="40" id="profileName-input" class="popup__input popup__input_profile_name" type="text" placeholder="Имя" name="profileName" required>
+        <span class="popup__input-error profileName-input-error"></span>
+        <input minlength="2" maxlength="200" id="profileJob-input" class="popup__input popup__input_profile_job" type="text" placeholder="О себе" name="profileJob" required>
+        <span class="popup__input-error profileJob-input-error"></span>
         <button class="popup__save" type="submit">Сохранить</button>
       </form>
     </div>
@@ -46,9 +48,11 @@
     <div class="popup__container">
       <button class="popup__close" type="button"></button>
       <h2 class="popup__title">Новое место</h2>
-      <form class="popup__form" name="formAddCard">
-        <input class="popup__input popup__input_card_name" type="text" placeholder="Название" name="cardName">
-        <input class="popup__input popup__input_card_link" type="text" placeholder="Ссылка на картинку" name="cardLink">
+      <form class="popup__form" name="formAddCard" novalidate>
+        <input minlength="2" maxlength="30" id="cardName-input" class="popup__input popup__input_card_name" type="text" placeholder="Название" name="cardName" required>
+        <span class="popup__input-error cardName-input-error"></span>
+        <input id="cardLink-input" class="popup__input popup__input_card_link" type="url" placeholder="Ссылка на картинку" name="cardLink" required>
+        <span class="popup__input-error cardLink-input-error"></span>
         <button class="popup__save" type="submit">Создать</button>
       </form>
     </div>
