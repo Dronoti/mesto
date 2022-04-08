@@ -1,5 +1,4 @@
 const editProfileButton = document.querySelector('.profile__edit-button');
-const closeFormButtons = document.querySelectorAll('.popup__close');
 const addCardButton = document.querySelector('.profile__add-button');
 const userName = document.querySelector('.profile__name');
 const userJob = document.querySelector('.profile__description');
@@ -10,13 +9,15 @@ const popupEditProfile = document.querySelector('.popup_type_edit-profile');
 const popupAddCard = document.querySelector('.popup_type_add-card');
 const popupShowCard = document.querySelector('.popup_type_show-card');
 
-const formEditProfile = popupEditProfile.querySelector('.popup__form');
-const nameInput = formEditProfile.querySelector('.popup__input_profile_name');
-const jobInput = formEditProfile.querySelector('.popup__input_profile_job');
+const formEditProfile = document.forms.formEditProfile;
+const nameInput = formEditProfile.elements.profileName;
+const jobInput = formEditProfile.elements.profileJob;
+const buttonEditProfile = formEditProfile.elements.buttonSubmit;
 
-const formAddCard = popupAddCard.querySelector('.popup__form');
-const cardNameInput = formAddCard.querySelector('.popup__input_card_name');
-const cardLinkInput = formAddCard.querySelector('.popup__input_card_link');
+const formAddCard = document.forms.formAddCard;
+const cardNameInput = formAddCard.elements.cardName;
+const cardLinkInput = formAddCard.elements.cardLink;
+const buttonAddCard = formAddCard.elements.buttonSubmit;
 
 const showCardImage = popupShowCard.querySelector('.popup__image');
 const showCardCaption = popupShowCard.querySelector('.popup__caption');
@@ -47,27 +48,47 @@ function addCard(node, card) {
 }
 
 function openPopup(popup) {
+  document.addEventListener('keydown', handleEsc);
+  popup.addEventListener('click', handleClose);
   popup.classList.add('popup_opened');
 }
 
 function closePopup(popup) {
+  document.removeEventListener('keydown', handleEsc);
+  popup.removeEventListener('click', handleClose);
   popup.classList.remove('popup_opened');
 }
 
 function handleProfileSubmit(evt) {
   evt.preventDefault();
-  if (nameInput.value)
+  if (evt.currentTarget.checkValidity()) {
     userName.textContent = nameInput.value;
-  if (jobInput.value)
     userJob.textContent = jobInput.value;
-  closePopup(popupEditProfile);
+    closePopup(popupEditProfile);
+  }
 }
 
 function handleAddCardSubmit(evt) {
   evt.preventDefault();
-  if (cardNameInput.value && cardLinkInput.value)
+  if (evt.currentTarget.checkValidity()) {
     addCard(elementsList, createNewCard(cardNameInput.value, cardLinkInput.value));
-  closePopup(popupAddCard);
+    closePopup(popupAddCard);
+  }
+}
+
+function handleEsc(evt) {
+  if (evt.key === 'Escape') {
+    evt.preventDefault();
+    const openedPopup = document.querySelector('.popup_opened');
+    closePopup(openedPopup);
+  }
+}
+
+function handleClose(evt) {
+  if (evt.target.classList.contains('popup') || evt.target.classList.contains('popup__close')) {
+    const openedPopup = document.querySelector('.popup_opened');
+    closePopup(openedPopup);
+  }
 }
 
 for (let item of initialCards)
@@ -76,18 +97,20 @@ for (let item of initialCards)
 editProfileButton.addEventListener('click', () => {
   nameInput.value = userName.textContent;
   jobInput.value = userJob.textContent;
+  toggleButtonState(formEditProfile, buttonEditProfile, settings);
+  hideInputError(formEditProfile, nameInput, settings);
+  hideInputError(formEditProfile, jobInput, settings);
   openPopup(popupEditProfile);
 });
 
 addCardButton.addEventListener('click', () => {
   cardNameInput.value = '';
   cardLinkInput.value = '';
+  toggleButtonState(formAddCard, buttonAddCard, settings);
+  hideInputError(formAddCard, cardNameInput, settings);
+  hideInputError(formAddCard, cardLinkInput, settings);
   openPopup(popupAddCard);
 });
-
-closeFormButtons.forEach(item => item.addEventListener('click', (evt) => {
-  closePopup(evt.currentTarget.closest('.popup'));
-}));
 
 formEditProfile.addEventListener('submit', handleProfileSubmit);
 formAddCard.addEventListener('submit', handleAddCardSubmit);
