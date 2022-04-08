@@ -61,19 +61,15 @@ function closePopup(popup) {
 
 function handleProfileSubmit(evt) {
   evt.preventDefault();
-  if (evt.currentTarget.checkValidity()) {
-    userName.textContent = nameInput.value;
-    userJob.textContent = jobInput.value;
-    closePopup(popupEditProfile);
-  }
+  userName.textContent = nameInput.value;
+  userJob.textContent = jobInput.value;
+  closePopup(popupEditProfile);
 }
 
 function handleAddCardSubmit(evt) {
   evt.preventDefault();
-  if (evt.currentTarget.checkValidity()) {
-    addCard(elementsList, createNewCard(cardNameInput.value, cardLinkInput.value));
-    closePopup(popupAddCard);
-  }
+  addCard(elementsList, createNewCard(cardNameInput.value, cardLinkInput.value));
+  closePopup(popupAddCard);
 }
 
 function handleEsc(evt) {

@@ -3,10 +3,13 @@ function handleFormSubmit(evt) {
 }
 
 function toggleButtonState(formElement, buttonElement, {inactiveButtonClass}) {
-  if (!formElement.checkValidity())
+  if (!formElement.checkValidity()) {
     buttonElement.classList.add(inactiveButtonClass);
-  else
+    buttonElement.setAttribute('disabled', true);
+  } else {
     buttonElement.classList.remove(inactiveButtonClass);
+    buttonElement.removeAttribute('disabled');
+  }
 }
 
 function showInputError(formElement, inputElement, {inputErrorClass, errorClass}) {
