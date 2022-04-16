@@ -1,13 +1,15 @@
+import {initialCards, settings} from './data.js';
+import FormValidator from "./FormValidator.js";
+import Card from './Card.js';
+
 const editProfileButton = document.querySelector('.profile__edit-button');
 const addCardButton = document.querySelector('.profile__add-button');
 const userName = document.querySelector('.profile__name');
 const userJob = document.querySelector('.profile__description');
 const elementsList = document.querySelector('.elements__list');
-const cardTemplate = document.querySelector('.template-elements').content;
 
 const popupEditProfile = document.querySelector('.popup_type_edit-profile');
 const popupAddCard = document.querySelector('.popup_type_add-card');
-const popupShowCard = document.querySelector('.popup_type_show-card');
 
 const formEditProfile = document.forms.formEditProfile;
 const nameInput = formEditProfile.elements.profileName;
@@ -19,35 +21,16 @@ const cardNameInput = formAddCard.elements.cardName;
 const cardLinkInput = formAddCard.elements.cardLink;
 const buttonAddCard = formAddCard.elements.buttonSubmit;
 
-const showCardImage = popupShowCard.querySelector('.popup__image');
-const showCardCaption = popupShowCard.querySelector('.popup__caption');
-
-function createNewCard(name, link) {
-  const newCard = cardTemplate.firstElementChild.cloneNode(true);
-  const cardImage = newCard.querySelector('.elements__image');
-  cardImage.src = link;
-  cardImage.alt = name;
-  newCard.querySelector('.elements__title').textContent = name;
-  newCard.querySelector('.elements__button-like').addEventListener('click', (evt) => {
-    evt.currentTarget.classList.toggle('elements__button-like_active');
-  });
-  newCard.querySelector('.elements__remove').addEventListener('click', () => {
-    newCard.remove();
-  });
-  cardImage.addEventListener('click', () => {
-    showCardImage.src = cardImage.src;
-    showCardImage.alt = cardImage.alt;
-    showCardCaption.textContent = cardImage.alt;
-    openPopup(popupShowCard);
-  });
-  return newCard;
+function generateCard(data, templateSelector) {
+  const card = new Card(data, templateSelector);
+  return card.createNewCard();
 }
 
 function addCard(node, card) {
   node.prepend(card);
 }
 
-function openPopup(popup) {
+export function openPopup(popup) {
   document.addEventListener('keydown', handleEsc);
   popup.addEventListener('click', handleClose);
   popup.classList.add('popup_opened');
@@ -68,7 +51,11 @@ function handleProfileSubmit(evt) {
 
 function handleAddCardSubmit(evt) {
   evt.preventDefault();
-  addCard(elementsList, createNewCard(cardNameInput.value, cardLinkInput.value));
+  const userInput = {
+    name: cardNameInput.value,
+    link: cardLinkInput.value
+  }
+  addCard(elementsList, generateCard(userInput, '.template-elements'));
   closePopup(popupAddCard);
 }
 
@@ -87,8 +74,9 @@ function handleClose(evt) {
   }
 }
 
-for (let item of initialCards)
-  addCard(elementsList, createNewCard(item.name, item.link));
+initialCards.forEach(item => {
+  addCard(elementsList, generateCard(item, '.template-elements'));
+});
 
 editProfileButton.addEventListener('click', () => {
   nameInput.value = userName.textContent;
