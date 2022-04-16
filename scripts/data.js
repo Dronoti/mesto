@@ -25,8 +25,7 @@ export const initialCards = [
   }
 ];
 
-export const settings = {
-  formSelector: '.popup__form',
+export const settingsForm = {
   inputSelector: '.popup__input',
   submitButtonSelector: '.popup__save',
   inactiveButtonClass: 'popup__save_inactive',

@@ -1,4 +1,4 @@
-import {initialCards, settings} from './data.js';
+import {initialCards, settingsForm} from './data.js';
 import FormValidator from "./FormValidator.js";
 import Card from './Card.js';
 
@@ -14,12 +14,17 @@ const popupAddCard = document.querySelector('.popup_type_add-card');
 const formEditProfile = document.forms.formEditProfile;
 const nameInput = formEditProfile.elements.profileName;
 const jobInput = formEditProfile.elements.profileJob;
-const buttonEditProfile = formEditProfile.elements.buttonSubmit;
 
 const formAddCard = document.forms.formAddCard;
 const cardNameInput = formAddCard.elements.cardName;
 const cardLinkInput = formAddCard.elements.cardLink;
-const buttonAddCard = formAddCard.elements.buttonSubmit;
+
+const formList = Array.from(document.forms);
+
+formList.forEach(form => {
+  const formValidator = new FormValidator(settingsForm, form);
+  formValidator.enableValidation();
+});
 
 function generateCard(data, templateSelector) {
   const card = new Card(data, templateSelector);
@@ -81,18 +86,14 @@ initialCards.forEach(item => {
 editProfileButton.addEventListener('click', () => {
   nameInput.value = userName.textContent;
   jobInput.value = userJob.textContent;
-  toggleButtonState(formEditProfile, buttonEditProfile, settings);
-  hideInputError(formEditProfile, nameInput, settings);
-  hideInputError(formEditProfile, jobInput, settings);
+  new FormValidator(settingsForm, formEditProfile).resetValidation();
   openPopup(popupEditProfile);
 });
 
 addCardButton.addEventListener('click', () => {
   cardNameInput.value = '';
   cardLinkInput.value = '';
-  toggleButtonState(formAddCard, buttonAddCard, settings);
-  hideInputError(formAddCard, cardNameInput, settings);
-  hideInputError(formAddCard, cardLinkInput, settings);
+  new FormValidator(settingsForm, formAddCard).resetValidation();
   openPopup(popupAddCard);
 });
 
