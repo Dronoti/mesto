@@ -4,6 +4,9 @@ export default class Card {
     this._link = data.link;
     this._openPopup = data.openPopup;
     this._templateSelector = templateSelector;
+    this._popupShowCard = document.querySelector('.popup_type_show-card');
+    this._showCardImage = this._popupShowCard.querySelector('.popup__image');
+    this._showCardCaption = this._popupShowCard.querySelector('.popup__caption');
   }
 
   _getTemplate() {
@@ -23,10 +26,6 @@ export default class Card {
   }
 
   _handleOpenShowCard() {
-    this._popupShowCard = document.querySelector('.popup_type_show-card');
-    this._showCardImage = this._popupShowCard.querySelector('.popup__image');
-    this._showCardCaption = this._popupShowCard.querySelector('.popup__caption');
-
     this._showCardImage.src = this._cardImage.src;
     this._showCardImage.alt = this._cardImage.alt;
     this._showCardCaption.textContent = this._cardImage.alt;

@@ -28,7 +28,7 @@ formList.forEach(form => {
   formValidatorsObj[form.name] = formValidator;
 });
 
-function generateCard(name, link, templateSelector) {
+function generateCard(name, link, templateSelector='.template-elements') {
   const data = {
     name: name,
     link: link,
@@ -44,13 +44,13 @@ function addCard(node, card) {
 
 function openPopup(popup) {
   document.addEventListener('keydown', handleEsc);
-  popup.addEventListener('click', handleClose);
+  popup.addEventListener('mousedown', handleClose);
   popup.classList.add('popup_opened');
 }
 
 function closePopup(popup) {
   document.removeEventListener('keydown', handleEsc);
-  popup.removeEventListener('click', handleClose);
+  popup.removeEventListener('mousedown', handleClose);
   popup.classList.remove('popup_opened');
 }
 
@@ -63,7 +63,7 @@ function handleProfileSubmit(evt) {
 
 function handleAddCardSubmit(evt) {
   evt.preventDefault();
-  addCard(elementsList, generateCard(cardNameInput.value, cardLinkInput.value, '.template-elements'));
+  addCard(elementsList, generateCard(cardNameInput.value, cardLinkInput.value));
   closePopup(popupAddCard);
 }
 
@@ -76,14 +76,12 @@ function handleEsc(evt) {
 }
 
 function handleClose(evt) {
-  if (evt.target.classList.contains('popup') || evt.target.classList.contains('popup__close')) {
-    const openedPopup = document.querySelector('.popup_opened');
-    closePopup(openedPopup);
-  }
+  if (evt.target.classList.contains('popup') || evt.target.classList.contains('popup__close'))
+    closePopup(evt.currentTarget);
 }
 
 initialCards.forEach(item => {
-  addCard(elementsList, generateCard(item.name, item.link, '.template-elements'));
+  addCard(elementsList, generateCard(item.name, item.link));
 });
 
 editProfileButton.addEventListener('click', () => {
@@ -94,8 +92,7 @@ editProfileButton.addEventListener('click', () => {
 });
 
 addCardButton.addEventListener('click', () => {
-  cardNameInput.value = '';
-  cardLinkInput.value = '';
+  formAddCard.reset();
   formValidatorsObj.formAddCard.resetValidation();
   openPopup(popupAddCard);
 });
