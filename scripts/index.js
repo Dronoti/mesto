@@ -26,7 +26,12 @@ formList.forEach(form => {
   formValidator.enableValidation();
 });
 
-function generateCard(data, templateSelector) {
+function generateCard(name, link, templateSelector) {
+  const data = {
+    name: name,
+    link: link,
+    openPopup: openPopup
+  }
   const card = new Card(data, templateSelector);
   return card.createNewCard();
 }
@@ -35,7 +40,7 @@ function addCard(node, card) {
   node.prepend(card);
 }
 
-export function openPopup(popup) {
+function openPopup(popup) {
   document.addEventListener('keydown', handleEsc);
   popup.addEventListener('click', handleClose);
   popup.classList.add('popup_opened');
@@ -56,11 +61,7 @@ function handleProfileSubmit(evt) {
 
 function handleAddCardSubmit(evt) {
   evt.preventDefault();
-  const userInput = {
-    name: cardNameInput.value,
-    link: cardLinkInput.value
-  }
-  addCard(elementsList, generateCard(userInput, '.template-elements'));
+  addCard(elementsList, generateCard(cardNameInput.value, cardLinkInput.value, '.template-elements'));
   closePopup(popupAddCard);
 }
 
@@ -80,7 +81,7 @@ function handleClose(evt) {
 }
 
 initialCards.forEach(item => {
-  addCard(elementsList, generateCard(item, '.template-elements'));
+  addCard(elementsList, generateCard(item.name, item.link, '.template-elements'));
 });
 
 editProfileButton.addEventListener('click', () => {

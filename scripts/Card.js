@@ -1,9 +1,8 @@
-import {openPopup} from "./index.js";
-
 export default class Card {
   constructor(data, templateSelector) {
     this._name = data.name;
     this._link = data.link;
+    this._openPopup = data.openPopup;
     this._templateSelector = templateSelector;
   }
 
@@ -31,7 +30,7 @@ export default class Card {
     this._showCardImage.src = this._cardImage.src;
     this._showCardImage.alt = this._cardImage.alt;
     this._showCardCaption.textContent = this._cardImage.alt;
-    openPopup(this._popupShowCard);
+    this._openPopup(this._popupShowCard);
   }
 
   _setEventListeners() {
