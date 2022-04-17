@@ -20,10 +20,12 @@ const cardNameInput = formAddCard.elements.cardName;
 const cardLinkInput = formAddCard.elements.cardLink;
 
 const formList = Array.from(document.forms);
+const formValidatorsObj = {};
 
 formList.forEach(form => {
   const formValidator = new FormValidator(settingsForm, form);
   formValidator.enableValidation();
+  formValidatorsObj[form.name] = formValidator;
 });
 
 function generateCard(name, link, templateSelector) {
@@ -87,14 +89,14 @@ initialCards.forEach(item => {
 editProfileButton.addEventListener('click', () => {
   nameInput.value = userName.textContent;
   jobInput.value = userJob.textContent;
-  new FormValidator(settingsForm, formEditProfile).resetValidation();
+  formValidatorsObj.formEditProfile.resetValidation();
   openPopup(popupEditProfile);
 });
 
 addCardButton.addEventListener('click', () => {
   cardNameInput.value = '';
   cardLinkInput.value = '';
-  new FormValidator(settingsForm, formAddCard).resetValidation();
+  formValidatorsObj.formAddCard.resetValidation();
   openPopup(popupAddCard);
 });
 
