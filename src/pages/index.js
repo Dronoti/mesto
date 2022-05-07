@@ -1,5 +1,6 @@
 import Card from '../components/Card.js';
 import FormValidator from "../components/FormValidator.js";
+import Section from "../components/Section.js";
 import {
   initialCards,
   settingsForm,
@@ -7,7 +8,7 @@ import {
   addCardButton,
   userName,
   userJob,
-  elementsList,
+  elementsListSelector,
   popupEditProfile,
   popupAddCard,
   formEditProfile,
@@ -17,8 +18,19 @@ import {
   cardNameInput,
   cardLinkInput,
   formList,
-  formValidatorsObj
+  formValidatorsObj,
+  showCardImage,
+  showCardCaption,
+  popupShowCard
 } from '../utils/constants.js';
+
+const cardsList = new Section({
+  items: initialCards,
+  renderer: (item) => {
+    const card = new Card(item, handleCardClick, '.template-elements');
+    cardsList.addItem(card.createNewCard());
+  }
+}, elementsListSelector);
 
 formList.forEach(form => {
   const formValidator = new FormValidator(settingsForm, form);
@@ -26,18 +38,11 @@ formList.forEach(form => {
   formValidatorsObj[form.name] = formValidator;
 });
 
-function generateCard(name, link, templateSelector='.template-elements') {
-  const data = {
-    name: name,
-    link: link,
-    openPopup: openPopup
-  }
-  const card = new Card(data, templateSelector);
-  return card.createNewCard();
-}
-
-function addCard(node, card) {
-  node.prepend(card);
+function handleCardClick(name, link) {
+  showCardImage.src = link;
+  showCardImage.alt = name;
+  showCardCaption.textContent = name;
+  openPopup(popupShowCard);
 }
 
 function openPopup(popup) {
@@ -61,7 +66,13 @@ function handleProfileSubmit(evt) {
 
 function handleAddCardSubmit(evt) {
   evt.preventDefault();
-  addCard(elementsList, generateCard(cardNameInput.value, cardLinkInput.value));
+
+  const data = {
+    name: cardNameInput.value,
+    link: cardLinkInput.value
+  };
+  const card = new Card(data, handleCardClick, '.template-elements');
+  cardsList.addItem(card.createNewCard());
   closePopup(popupAddCard);
 }
 
@@ -78,10 +89,6 @@ function handleClose(evt) {
     closePopup(evt.currentTarget);
 }
 
-initialCards.forEach(item => {
-  addCard(elementsList, generateCard(item.name, item.link));
-});
-
 editProfileButton.addEventListener('click', () => {
   nameInput.value = userName.textContent;
   jobInput.value = userJob.textContent;
@@ -97,3 +104,5 @@ addCardButton.addEventListener('click', () => {
 
 formEditProfile.addEventListener('submit', handleProfileSubmit);
 formAddCard.addEventListener('submit', handleAddCardSubmit);
+
+cardsList.renderItems();
