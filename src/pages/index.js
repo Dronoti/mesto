@@ -1,26 +1,24 @@
-import {initialCards, settingsForm} from './data.js';
-import FormValidator from "./FormValidator.js";
-import Card from './Card.js';
-
-const editProfileButton = document.querySelector('.profile__edit-button');
-const addCardButton = document.querySelector('.profile__add-button');
-const userName = document.querySelector('.profile__name');
-const userJob = document.querySelector('.profile__description');
-const elementsList = document.querySelector('.elements__list');
-
-const popupEditProfile = document.querySelector('.popup_type_edit-profile');
-const popupAddCard = document.querySelector('.popup_type_add-card');
-
-const formEditProfile = document.forms.formEditProfile;
-const nameInput = formEditProfile.elements.profileName;
-const jobInput = formEditProfile.elements.profileJob;
-
-const formAddCard = document.forms.formAddCard;
-const cardNameInput = formAddCard.elements.cardName;
-const cardLinkInput = formAddCard.elements.cardLink;
-
-const formList = Array.from(document.forms);
-const formValidatorsObj = {};
+import Card from '../components/Card.js';
+import FormValidator from "../components/FormValidator.js";
+import {
+  initialCards,
+  settingsForm,
+  editProfileButton,
+  addCardButton,
+  userName,
+  userJob,
+  elementsList,
+  popupEditProfile,
+  popupAddCard,
+  formEditProfile,
+  nameInput,
+  jobInput,
+  formAddCard,
+  cardNameInput,
+  cardLinkInput,
+  formList,
+  formValidatorsObj
+} from '../utils/constants.js';
 
 formList.forEach(form => {
   const formValidator = new FormValidator(settingsForm, form);
