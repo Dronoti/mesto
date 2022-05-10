@@ -3,13 +3,12 @@ import FormValidator from "../components/FormValidator.js";
 import Section from "../components/Section.js";
 import PopupWithForm from "../components/PopupWithForm.js";
 import PopupWithImage from "../components/PopupWithImage.js";
+import UserInfo from "../components/UserInfo.js";
 import {
   initialCards,
   settingsForm,
   editProfileButton,
   addCardButton,
-  userName,
-  userJob,
   formList,
   formValidatorsObj
 } from '../utils/constants.js';
@@ -22,6 +21,11 @@ popupAddCard.setEventListeners();
 
 const popupShowCard = new PopupWithImage('.popup_type_show-card');
 popupShowCard.setEventListeners();
+
+const userInfo = new UserInfo({
+  userNameSelector: '.profile__name',
+  userJobSelector: '.profile__description'
+});
 
 const cardsList = new Section({
   items: initialCards,
@@ -39,14 +43,12 @@ formList.forEach(form => {
 
 function handleProfileSubmit(evt) {
   evt.preventDefault();
-  userName.textContent = popupEditProfile.inputValuesObj.profileName.value;
-  userJob.textContent = popupEditProfile.inputValuesObj.profileJob.value;
+  userInfo.setUserInfo(popupEditProfile.inputValuesObj);
   popupEditProfile.close();
 }
 
 function handleAddCardSubmit(evt) {
   evt.preventDefault();
-
   const data = {
     name: popupAddCard.inputValuesObj.cardName.value,
     link: popupAddCard.inputValuesObj.cardLink.value
@@ -57,8 +59,9 @@ function handleAddCardSubmit(evt) {
 }
 
 editProfileButton.addEventListener('click', () => {
-  popupEditProfile.inputValuesObj.profileName.value = userName.textContent;
-  popupEditProfile.inputValuesObj.profileJob.value = userJob.textContent;
+  const currentUserInfo = userInfo.getUserInfo();
+  popupEditProfile.inputValuesObj.profileName.value = currentUserInfo.profileName;
+  popupEditProfile.inputValuesObj.profileJob.value = currentUserInfo.profileJob;
   formValidatorsObj.formEditProfile.resetValidation();
   popupEditProfile.open();
 });
