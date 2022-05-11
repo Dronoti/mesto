@@ -7,33 +7,45 @@ import UserInfo from "../components/UserInfo.js";
 import {
   initialCards,
   settingsForm,
+  selectors,
   editProfileButton,
   addCardButton,
-  formList,
-  formValidatorsObj
+  formList
 } from '../utils/constants.js';
 
-const popupEditProfile = new PopupWithForm('.popup_type_edit-profile', handleProfileSubmit);
+const formValidatorsObj = {};
+
+const popupEditProfile = new PopupWithForm(selectors.popupEditProfile, handlerProfileSubmit);
 popupEditProfile.setEventListeners();
 
-const popupAddCard = new PopupWithForm('.popup_type_add-card', handleAddCardSubmit);
+const popupAddCard = new PopupWithForm(selectors.popupAddCard, handlerAddCardSubmit);
 popupAddCard.setEventListeners();
 
-const popupShowCard = new PopupWithImage('.popup_type_show-card');
+const popupShowCard = new PopupWithImage(selectors.popupShowCard);
 popupShowCard.setEventListeners();
 
-const userInfo = new UserInfo({
-  userNameSelector: '.profile__name',
-  userJobSelector: '.profile__description'
-});
+const userInfo = new UserInfo(selectors);
 
 const cardsList = new Section({
   items: initialCards,
   renderer: (item) => {
-    const card = new Card(item, popupShowCard.open.bind(popupShowCard), '.template-elements');
+    const card = new Card(item, popupShowCard.open.bind(popupShowCard), selectors);
     cardsList.addItem(card.createNewCard());
   }
-}, '.elements__list');
+}, selectors.cardListSelector);
+
+function handlerProfileSubmit(evt) {
+  evt.preventDefault();
+  userInfo.setUserInfo(this.inputValuesObj);
+  popupEditProfile.close();
+}
+
+function handlerAddCardSubmit(evt) {
+  evt.preventDefault();
+  const card = new Card(this.inputValuesObj, popupShowCard.open.bind(popupShowCard), selectors);
+  cardsList.addItem(card.createNewCard());
+  popupAddCard.close();
+}
 
 formList.forEach(form => {
   const formValidator = new FormValidator(settingsForm, form);
@@ -41,27 +53,8 @@ formList.forEach(form => {
   formValidatorsObj[form.name] = formValidator;
 });
 
-function handleProfileSubmit(evt) {
-  evt.preventDefault();
-  userInfo.setUserInfo(popupEditProfile.inputValuesObj);
-  popupEditProfile.close();
-}
-
-function handleAddCardSubmit(evt) {
-  evt.preventDefault();
-  const data = {
-    name: popupAddCard.inputValuesObj.cardName.value,
-    link: popupAddCard.inputValuesObj.cardLink.value
-  };
-  const card = new Card(data, popupShowCard.open.bind(popupShowCard), '.template-elements');
-  cardsList.addItem(card.createNewCard());
-  popupAddCard.close();
-}
-
 editProfileButton.addEventListener('click', () => {
-  const currentUserInfo = userInfo.getUserInfo();
-  popupEditProfile.inputValuesObj.profileName.value = currentUserInfo.profileName;
-  popupEditProfile.inputValuesObj.profileJob.value = currentUserInfo.profileJob;
+  popupEditProfile.setInputValues(userInfo.getUserInfo());
   formValidatorsObj.formEditProfile.resetValidation();
   popupEditProfile.open();
 });
