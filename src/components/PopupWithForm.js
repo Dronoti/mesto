@@ -15,9 +15,10 @@ export default class PopupWithForm extends Popup {
     })
   }
 
-  setInputValues({profileName, profileJob}) {
-    this._form.elements.profileName.value = profileName;
-    this._form.elements.profileJob.value = profileJob;
+  setInputValues(inputValues) {
+    this._inputList.forEach(item => {
+      item.value = inputValues[item.name];
+    })
   }
 
   setEventListeners() {

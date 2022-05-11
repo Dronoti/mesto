@@ -20,6 +20,7 @@ export default class Card {
 
   _handleButtonRemove() {
     this._newCard.remove();
+    this._newCard = null;
   }
 
   _setEventListeners() {
