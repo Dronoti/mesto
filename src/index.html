@@ -5,7 +5,6 @@
   <meta name="author" content="Andrey Lazarev">
   <meta name="description" content="проектная работа Mesto">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="pages/index.css">
   <title>Mesto</title>
 </head>
 <body class="page">
@@ -14,7 +13,7 @@
   </header>
   <main>
     <section class="profile">
-      <img class="profile__avatar" src="images/profile-avatar.jpg" alt="изображение профиля">
+      <img class="profile__avatar" src="<%=require('./images/profile-avatar.jpg')%>" alt="изображение профиля">
       <div class="profile__info">
         <div class="profile__first-line">
           <h1 class="profile__name">Жак-Ив Кусто</h1>
@@ -74,6 +73,5 @@
       </div>
     </li>
   </template>
-  <script type="module" src="./pages/index.js"></script>
 </body>
 </html>
