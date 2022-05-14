@@ -75,6 +75,17 @@
       </form>
     </div>
   </div>
+  <div class="popup popup_type_update-avatar popup_opened">
+    <div class="popup__container">
+      <button class="popup__close" type="button"></button>
+      <h2 class="popup__title">Обновить аватар</h2>
+      <form class="popup__form" name="formUpdAvatar" novalidate>
+        <input id="avatarLink-input" class="popup__input popup__input_avatar_link" type="url" placeholder="Ссылка на картинку" name="avatarLink" required>
+        <span class="popup__input-error avatarLink-input-error"></span>
+        <button class="popup__save" type="submit" name="buttonSubmit">Сохранить</button>
+      </form>
+    </div>
+  </div>
   <template class="template-elements">
     <li class="elements__item">
       <button class="elements__remove" type="button"></button>
