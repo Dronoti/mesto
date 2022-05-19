@@ -46,7 +46,7 @@ function renderUserInfo(info) {
 
 function renderInitialCards(initialCards) {
   cardsList = new Section({
-    items: initialCards,
+    items: initialCards.reverse(),
     renderer: (item) => {
       const card = new Card(item, popupShowCard.open.bind(popupShowCard), selectors, api);
       cardsList.addItem(card.createNewCard());
@@ -69,9 +69,17 @@ function handlerProfileSubmit(evt) {
 
 function handlerAddCardSubmit(evt) {
   evt.preventDefault();
-  const card = new Card(this.inputValuesObj, popupShowCard.open.bind(popupShowCard), selectors, api);
-  cardsList.addItem(card.createNewCard());
-  popupAddCard.close();
+  popupAddCard.showLoading(true);
+  api.postNewCard(this.inputValuesObj)
+    .then(item => {
+      const card = new Card(item, popupShowCard.open.bind(popupShowCard), selectors, api);
+      cardsList.addItem(card.createNewCard());
+    })
+    .catch(err => console.log(err))
+    .finally(() => {
+      popupAddCard.close();
+      popupAddCard.showLoading(false);
+    });
 }
 
 Promise.all([api.getUserInfo(), api.getInitialCards()])
