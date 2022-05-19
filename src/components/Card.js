@@ -1,9 +1,11 @@
 export default class Card {
-  constructor(data, handleCardClick, {templateSelector}) {
-    this._name = data.cardName;
-    this._link = data.cardLink;
+  constructor(data, handleCardClick, {templateSelector}, api) {
+    this._name = data.name;
+    this._link = data.link;
+    this._id = data._id;
     this._handleCardClick = handleCardClick;
     this._templateSelector = templateSelector;
+    this._api = api;
   }
 
   _getTemplate() {
@@ -19,8 +21,12 @@ export default class Card {
   }
 
   _handleButtonRemove() {
-    this._newCard.remove();
-    this._newCard = null;
+    this._api.deleteCard(this._id)
+      .then(() => {
+        this._newCard.remove();
+        this._newCard = null;
+      })
+      .catch(err => console.log(err));
   }
 
   _setEventListeners() {
