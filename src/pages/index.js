@@ -37,26 +37,11 @@ popupShowCard.setEventListeners();
 
 const userInfo = new UserInfo(selectors);
 
-function handlerProfileSubmit(evt) {
-  evt.preventDefault();
-  userInfo.setUserInfo(this.inputValuesObj);
-  popupEditProfile.close();
-}
-
-function handlerAddCardSubmit(evt) {
-  evt.preventDefault();
-  const card = new Card(this.inputValuesObj, popupShowCard.open.bind(popupShowCard), selectors, api);
-  cardsList.addItem(card.createNewCard());
-  popupAddCard.close();
-}
-
-function renderInitialUser(info) {
+function renderUserInfo(info) {
   userInfo.setUserInfo({
     profileName: info.name,
-    profileJob: info.about,
+    profileJob: info.about
   });
-  userInfo.setUserAvatar(info.avatar);
-  userInfo.setUserId(info._id);
 }
 
 function renderInitialCards(initialCards) {
@@ -70,9 +55,30 @@ function renderInitialCards(initialCards) {
   cardsList.renderItems();
 }
 
+function handlerProfileSubmit(evt) {
+  evt.preventDefault();
+  popupEditProfile.showLoading(true);
+  api.patchUserInfo(this.inputValuesObj)
+    .then(renderUserInfo)
+    .catch(err => console.log(err))
+    .finally(() => {
+      popupEditProfile.close();
+      popupEditProfile.showLoading(false);
+    });
+}
+
+function handlerAddCardSubmit(evt) {
+  evt.preventDefault();
+  const card = new Card(this.inputValuesObj, popupShowCard.open.bind(popupShowCard), selectors, api);
+  cardsList.addItem(card.createNewCard());
+  popupAddCard.close();
+}
+
 Promise.all([api.getUserInfo(), api.getInitialCards()])
   .then(([info, initialCards]) => {
-    renderInitialUser(info);
+    renderUserInfo(info);
+    userInfo.setUserAvatar(info.avatar);
+    userInfo.setUserId(info._id);
     renderInitialCards(initialCards);
   })
   .catch(err => console.log(err));

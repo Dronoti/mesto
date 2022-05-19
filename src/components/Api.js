@@ -18,6 +18,18 @@ export default class Api {
       .then(this._checkResponse);
   }
 
+  patchUserInfo({profileName, profileJob}) {
+    return fetch(`${this._baseUrl}/users/me`, {
+      method: 'PATCH',
+      headers: this._headers,
+      body: JSON.stringify({
+        name: profileName,
+        about: profileJob
+      })
+    })
+      .then(this._checkResponse);
+  }
+
   getInitialCards() {
     return fetch(`${this._baseUrl}/cards`, {
       headers: this._headers
