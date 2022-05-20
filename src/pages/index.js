@@ -15,7 +15,6 @@ import {
   formList
 } from '../utils/constants.js';
 
-const formValidatorsObj = {};
 let cardsList = {};
 
 const api = new Api({
@@ -71,10 +70,8 @@ function handlerAddCardSubmit(evt) {
   evt.preventDefault();
   popupAddCard.showLoading(true);
   api.postNewCard(this.inputValuesObj)
-    .then(item => {
-      const card = new Card(item, popupShowCard.open.bind(popupShowCard), selectors, api);
-      cardsList.addItem(card.createNewCard());
-    })
+    .then(() => api.getInitialCards())
+    .then((cards) => cardsList.updateSection(cards.reverse()))
     .catch(err => console.log(err))
     .finally(() => {
       popupAddCard.close();
@@ -88,22 +85,24 @@ Promise.all([api.getUserInfo(), api.getInitialCards()])
     userInfo.setUserAvatar(info.avatar);
     userInfo.setUserId(info._id);
     renderInitialCards(initialCards);
+
+    const formValidatorsObj = {};
+
+    formList.forEach(form => {
+      const formValidator = new FormValidator(settingsForm, form);
+      formValidator.enableValidation();
+      formValidatorsObj[form.name] = formValidator;
+    });
+
+    editProfileButton.addEventListener('click', () => {
+      popupEditProfile.setInputValues(userInfo.getUserInfo());
+      formValidatorsObj.formEditProfile.resetValidation();
+      popupEditProfile.open();
+    });
+
+    addCardButton.addEventListener('click', () => {
+      formValidatorsObj.formAddCard.resetValidation();
+      popupAddCard.open();
+    });
   })
   .catch(err => console.log(err));
-
-formList.forEach(form => {
-  const formValidator = new FormValidator(settingsForm, form);
-  formValidator.enableValidation();
-  formValidatorsObj[form.name] = formValidator;
-});
-
-editProfileButton.addEventListener('click', () => {
-  popupEditProfile.setInputValues(userInfo.getUserInfo());
-  formValidatorsObj.formEditProfile.resetValidation();
-  popupEditProfile.open();
-});
-
-addCardButton.addEventListener('click', () => {
-  formValidatorsObj.formAddCard.resetValidation();
-  popupAddCard.open();
-});

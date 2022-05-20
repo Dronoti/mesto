@@ -12,4 +12,10 @@ export default class Section {
   renderItems() {
     this._itemsArray.forEach(item => this._renderer(item));
   }
+
+  updateSection(cards) {
+    this._itemsArray = cards;
+    Array.from(this._container.children).forEach(item => item.remove());
+    this.renderItems();
+  }
 }
