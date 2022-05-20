@@ -4,6 +4,7 @@ import FormValidator from "../components/FormValidator.js";
 import Section from "../components/Section.js";
 import PopupWithForm from "../components/PopupWithForm.js";
 import PopupWithImage from "../components/PopupWithImage.js";
+import PopupWithSubmit from "../components/PopupWithSubmit.js";
 import UserInfo from "../components/UserInfo.js";
 import Api from "../components/Api.js";
 import {
@@ -34,6 +35,9 @@ popupAddCard.setEventListeners();
 const popupShowCard = new PopupWithImage(selectors.popupShowCard);
 popupShowCard.setEventListeners();
 
+const popupConfirm = new PopupWithSubmit(selectors.popupConfirm, handleConfirmSubmit);
+popupConfirm.setEventListeners();
+
 const userInfo = new UserInfo(selectors);
 
 function renderUserInfo(info) {
@@ -47,7 +51,13 @@ function renderInitialCards(initialCards) {
   cardsList = new Section({
     items: initialCards.reverse(),
     renderer: (item) => {
-      const card = new Card(item, popupShowCard.open.bind(popupShowCard), selectors, api);
+      const card = new Card(
+        item,
+        userInfo.getUserId() === item.owner._id,
+        popupShowCard.open.bind(popupShowCard),
+        popupConfirm.open.bind(popupConfirm),
+        selectors
+      );
       cardsList.addItem(card.createNewCard());
     }
   }, selectors.cardListSelector);
@@ -77,6 +87,17 @@ function handlerAddCardSubmit(evt) {
       popupAddCard.close();
       popupAddCard.showLoading(false);
     });
+}
+
+function handleConfirmSubmit(evt) {
+  evt.preventDefault();
+  api.deleteCard(popupConfirm.getDataToSend())
+    .then(() => api.getInitialCards())
+    .then((cards) => cardsList.updateSection(cards.reverse()))
+    .catch(err => console.log(err))
+    .finally(() => {
+      popupConfirm.close();
+    })
 }
 
 Promise.all([api.getUserInfo(), api.getInitialCards()])

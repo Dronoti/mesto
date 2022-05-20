@@ -1,12 +1,13 @@
 export default class Card {
-  constructor(data, handleCardClick, {templateSelector}, api) {
+  constructor(data, isRemovable, handleCardClick, handleButtonRemove, {templateSelector}) {
     this._name = data.name;
     this._link = data.link;
-    this._id = data._id;
+    this._cardId = data._id;
     this._likes = data.likes;
+    this._isRemovable = isRemovable;
     this._handleCardClick = handleCardClick;
+    this._handleButtonRemove = handleButtonRemove;
     this._templateSelector = templateSelector;
-    this._api = api;
   }
 
   _updateLikes() {
@@ -25,23 +26,13 @@ export default class Card {
     evt.currentTarget.classList.toggle('elements__button-like_active');
   }
 
-  _handleButtonRemove() {
-    this._api.deleteCard(this._id)
-      .then(() => {
-        this._newCard.remove();
-        this._newCard = null;
-      })
-      .catch(err => console.log(err));
-  }
-
   _setEventListeners() {
     this._newCard
       .querySelector('.elements__button-like')
       .addEventListener('click', (evt) => this._handleButtonLike(evt));
 
-    this._newCard
-      .querySelector('.elements__remove')
-      .addEventListener('click', () => this._handleButtonRemove());
+    if (this._buttonRemove)
+      this._buttonRemove.addEventListener('click', () => this._handleButtonRemove(this._cardId));
 
     this._cardImage.addEventListener('click', () => this._handleCardClick(this._name, this._link));
   }
@@ -56,6 +47,10 @@ export default class Card {
 
     this._likeCounter = this._newCard.querySelector('.elements__like-counter');
     this._updateLikes();
+
+    this._buttonRemove = this._newCard.querySelector('.elements__remove');
+    if (!this._isRemovable)
+      this._buttonRemove.remove();
 
     this._setEventListeners();
 

@@ -14,7 +14,8 @@ export const selectors = {
   templateSelector: '.template-elements',
   popupEditProfile: '.popup_type_edit-profile',
   popupAddCard: '.popup_type_add-card',
-  popupShowCard: '.popup_type_show-card'
+  popupShowCard: '.popup_type_show-card',
+  popupConfirm: '.popup_type_confirm'
 }
 
 export const editProfileButton = document.querySelector('.profile__edit-button');
