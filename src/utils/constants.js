@@ -13,6 +13,7 @@ export const selectors = {
   cardListSelector: '.elements__list',
   templateSelector: '.template-elements',
   popupEditProfile: '.popup_type_edit-profile',
+  popupUpdateAvatar: '.popup_type_update-avatar',
   popupAddCard: '.popup_type_add-card',
   popupShowCard: '.popup_type_show-card',
   popupConfirm: '.popup_type_confirm'

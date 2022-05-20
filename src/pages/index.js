@@ -32,6 +32,9 @@ popupEditProfile.setEventListeners();
 const popupAddCard = new PopupWithForm(selectors.popupAddCard, handlerAddCardSubmit);
 popupAddCard.setEventListeners();
 
+const popupUpdateAvatar = new PopupWithForm(selectors.popupUpdateAvatar, handlerAvatarSubmit)
+popupUpdateAvatar.setEventListeners();
+
 const popupShowCard = new PopupWithImage(selectors.popupShowCard);
 popupShowCard.setEventListeners();
 
@@ -100,6 +103,18 @@ function handleConfirmSubmit(evt) {
     })
 }
 
+function handlerAvatarSubmit(evt) {
+  evt.preventDefault();
+  popupUpdateAvatar.showLoading(true);
+  api.patchUserAvatar(this.inputValuesObj)
+    .then(info => userInfo.setUserAvatar(info.avatar))
+    .catch(err => console.log(err))
+    .finally(() => {
+      popupUpdateAvatar.close();
+      popupUpdateAvatar.showLoading(false);
+    });
+}
+
 Promise.all([api.getUserInfo(), api.getInitialCards()])
   .then(([info, initialCards]) => {
     renderUserInfo(info);
@@ -124,6 +139,11 @@ Promise.all([api.getUserInfo(), api.getInitialCards()])
     addCardButton.addEventListener('click', () => {
       formValidatorsObj.formAddCard.resetValidation();
       popupAddCard.open();
+    });
+
+    editAvatarButton.addEventListener('click', () => {
+      formValidatorsObj.formUpdAvatar.resetValidation();
+      popupUpdateAvatar.open();
     });
   })
   .catch(err => console.log(err));
