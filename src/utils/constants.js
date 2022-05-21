@@ -19,7 +19,10 @@ export const selectors = {
   popupConfirm: '.popup_type_confirm'
 }
 
-export const editProfileButton = document.querySelector('.profile__edit-button');
-export const addCardButton = document.querySelector('.profile__add-button');
-export const editAvatarButton = document.querySelector('.profile__avatar-button');
+export const buttons = {
+  editProfileButton: document.querySelector('.profile__edit-button'),
+  addCardButton: document.querySelector('.profile__add-button'),
+  editAvatarButton: document.querySelector('.profile__avatar-button')
+}
+
 export const formList = Array.from(document.forms);
