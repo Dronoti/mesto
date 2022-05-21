@@ -25,6 +25,7 @@
 * CSS3
 * JavaScript (OOP)
 * Webpack
+* API server
 * Flexbox
 * Grid Layout
 * Figma
