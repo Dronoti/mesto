@@ -40,6 +40,7 @@ popupShowCard.setEventListeners();
 
 const popupConfirm = new PopupWithSubmit(selectors.popupConfirm, handleConfirmSubmit);
 popupConfirm.setEventListeners();
+popupConfirm.showLoading = popupEditProfile.showLoading;
 
 const userInfo = new UserInfo(selectors);
 
@@ -69,49 +70,51 @@ function renderInitialCards(initialCards) {
 
 function handlerProfileSubmit(evt) {
   evt.preventDefault();
-  popupEditProfile.showLoading(true);
+  popupEditProfile.showLoading('Сохранение...');
   api.patchUserInfo(this.inputValuesObj)
     .then(renderUserInfo)
     .catch(err => console.log(err))
     .finally(() => {
       popupEditProfile.close();
-      popupEditProfile.showLoading(false);
+      popupEditProfile.showLoading('Сохранить');
     });
 }
 
 function handlerAddCardSubmit(evt) {
   evt.preventDefault();
-  popupAddCard.showLoading(true);
+  popupAddCard.showLoading('Создание...');
   api.postNewCard(this.inputValuesObj)
     .then(() => api.getInitialCards())
     .then((cards) => cardsList.updateSection(cards.reverse()))
     .catch(err => console.log(err))
     .finally(() => {
       popupAddCard.close();
-      popupAddCard.showLoading(false);
+      popupAddCard.showLoading('Создать');
     });
 }
 
 function handleConfirmSubmit(evt) {
   evt.preventDefault();
+  popupConfirm.showLoading('Удаление...');
   api.deleteCard(popupConfirm.getDataToSend())
     .then(() => api.getInitialCards())
     .then((cards) => cardsList.updateSection(cards.reverse()))
     .catch(err => console.log(err))
     .finally(() => {
       popupConfirm.close();
+      popupConfirm.showLoading('Да');
     })
 }
 
 function handlerAvatarSubmit(evt) {
   evt.preventDefault();
-  popupUpdateAvatar.showLoading(true);
+  popupUpdateAvatar.showLoading('Сохранение...');
   api.patchUserAvatar(this.inputValuesObj)
     .then(info => userInfo.setUserAvatar(info.avatar))
     .catch(err => console.log(err))
     .finally(() => {
       popupUpdateAvatar.close();
-      popupUpdateAvatar.showLoading(false);
+      popupUpdateAvatar.showLoading('Сохранить');
     });
 }
 

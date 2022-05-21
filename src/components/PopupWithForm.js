@@ -10,18 +10,8 @@ export default class PopupWithForm extends Popup {
     this.inputValuesObj = {};
   }
 
-  showLoading(isLoading) {
-    if (isLoading) {
-      if (this._buttonSubmit.textContent === 'Сохранить')
-        this._buttonSubmit.textContent = 'Сохранение...';
-      else if (this._buttonSubmit.textContent === 'Создать')
-        this._buttonSubmit.textContent = 'Создание...';
-    } else {
-      if (this._buttonSubmit.textContent === 'Сохранение...')
-        this._buttonSubmit.textContent = 'Сохранить';
-      else if (this._buttonSubmit.textContent === 'Создание...')
-        this._buttonSubmit.textContent = 'Создать';
-    }
+  showLoading(text) {
+    this._buttonSubmit.textContent = text;
   }
 
   _getInputValues() {
