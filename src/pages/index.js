@@ -57,9 +57,10 @@ function renderInitialCards(initialCards) {
     renderer: (item) => {
       const card = new Card(
         item,
-        userInfo.getUserId() === item.owner._id,
+        userInfo.getUserId(),
         popupShowCard.open.bind(popupShowCard),
         popupConfirm.open.bind(popupConfirm),
+        handleButtonLike,
         selectors
       );
       cardsList.addItem(card.createNewCard());
@@ -104,6 +105,13 @@ function handleConfirmSubmit(evt) {
       popupConfirm.close();
       popupConfirm.showLoading('Да');
     })
+}
+
+function handleButtonLike(cardId, isLiked) {
+  const promise = isLiked ? api.deleteLike(cardId) : api.addLike(cardId);
+  promise
+    .then(res => this.setLikes(res.likes))
+    .catch(err => console.log(err));
 }
 
 function handlerAvatarSubmit(evt) {
