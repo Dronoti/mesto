@@ -49,20 +49,22 @@ function renderUserInfo(info) {
   });
 }
 
+function createCard(item) {
+  const card = new Card(
+    item,
+    userInfo.getUserId(),
+    popupShowCard.open.bind(popupShowCard),
+    popupConfirm.open.bind(popupConfirm),
+    handleButtonLike,
+    selectors
+  );
+  return card.createNewCard();
+}
+
 function renderInitialCards(initialCards) {
   cardsList = new Section({
     items: initialCards.reverse(),
-    renderer: (item) => {
-      const card = new Card(
-        item,
-        userInfo.getUserId(),
-        popupShowCard.open.bind(popupShowCard),
-        popupConfirm.open.bind(popupConfirm),
-        handleButtonLike,
-        selectors
-      );
-      cardsList.addItem(card.createNewCard());
-    }
+    renderer: item => cardsList.addItem(createCard(item))
   }, selectors.cardListSelector);
   cardsList.renderItems();
 }
@@ -71,12 +73,12 @@ function handlerProfileSubmit(evt) {
   evt.preventDefault();
   popupEditProfile.showLoading('Сохранение...');
   api.patchUserInfo(this.inputValuesObj)
-    .then(renderUserInfo)
-    .catch(err => alert(err))
-    .finally(() => {
+    .then(info => {
+      renderUserInfo(info);
       popupEditProfile.close();
-      popupEditProfile.showLoading('Сохранить');
-    });
+    })
+    .catch(err => alert(err))
+    .finally(() => popupEditProfile.showLoading('Сохранить'));
 }
 
 function handlerAddCardSubmit(evt) {
@@ -84,12 +86,12 @@ function handlerAddCardSubmit(evt) {
   popupAddCard.showLoading('Создание...');
   api.postNewCard(this.inputValuesObj)
     .then(() => api.getInitialCards())
-    .then((cards) => cardsList.updateSection(cards.reverse()))
-    .catch(err => alert(err))
-    .finally(() => {
+    .then(cards => {
+      cardsList.updateSection(cards.reverse());
       popupAddCard.close();
-      popupAddCard.showLoading('Создать');
-    });
+    })
+    .catch(err => alert(err))
+    .finally(() => popupAddCard.showLoading('Создать'));
 }
 
 function handleConfirmSubmit(evt) {
@@ -97,12 +99,12 @@ function handleConfirmSubmit(evt) {
   popupConfirm.showLoading('Удаление...');
   api.deleteCard(popupConfirm.getDataToSend())
     .then(() => api.getInitialCards())
-    .then((cards) => cardsList.updateSection(cards.reverse()))
-    .catch(err => alert(err))
-    .finally(() => {
+    .then(cards => {
+      cardsList.updateSection(cards.reverse());
       popupConfirm.close();
-      popupConfirm.showLoading('Да');
     })
+    .catch(err => alert(err))
+    .finally(() => popupConfirm.showLoading('Да'));
 }
 
 function handleButtonLike(cardId, isLiked) {
@@ -116,12 +118,12 @@ function handlerAvatarSubmit(evt) {
   evt.preventDefault();
   popupUpdateAvatar.showLoading('Сохранение...');
   api.patchUserAvatar(this.inputValuesObj)
-    .then(info => userInfo.setUserAvatar(info.avatar))
-    .catch(err => alert(err))
-    .finally(() => {
+    .then(info => {
+      userInfo.setUserAvatar(info.avatar);
       popupUpdateAvatar.close();
-      popupUpdateAvatar.showLoading('Сохранить');
-    });
+    })
+    .catch(err => alert(err))
+    .finally(() => popupUpdateAvatar.showLoading('Сохранить'));
 }
 
 Promise.all([api.getUserInfo(), api.getInitialCards()])
